@@ -1,0 +1,5 @@
+pins:
+  LED:
+    port: GPIOC
+    pin: 13
+    mode: output
