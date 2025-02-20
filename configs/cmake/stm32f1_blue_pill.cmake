@@ -1,15 +1,24 @@
 # Настройки для STM32F1 Blue Pill
 include(${PLATFORM_PATH}/cmake/parse_yaml.cmake)
 
+
 # Парсинг target.yaml и pinmux.yaml
 parse_yaml(${PROJECT_SOURCE_DIR}/configs/target.yaml "TARGET_")
-parse_yaml(${PROJECT_SOURCE_DIR}/configs/pinmux.yaml "PINMUX_")
+# parse_yaml(${PROJECT_SOURCE_DIR}/configs/pinmux.yaml "PINMUX_")
 
 # Конфигурация MCU
-set(MCU_MODEL ${TARGET_mcu} CACHE STRING "STM32F103C8")
-set(CPU_FREQ ${TARGET_clock} CACHE STRING "72MHz")
+set(MCU_MODEL ${TARGET_mcu})
+set(CPU_FREQ ${TARGET_clock})
+set(LINKER_SCRIPT ${TARGET_linker_script})
 
 string(TOUPPER ${MCU_MODEL} MCU_DEFINE)  # Например, STM32F103C8TX
+
+# # вывод всех переменных
+# get_cmake_property(_variableNames VARIABLES)
+# list (SORT _variableNames)
+# foreach (_variableName ${_variableNames})
+#     message(STATUS "${_variableName}=${${_variableName}}")
+# endforeach()
 
 # Специфичные флаги для STM32F1
 add_compile_definitions(
@@ -29,15 +38,5 @@ include_directories(
     ${PROJECT_BINARY_DIR}/generated  # Для gpio_config.h
 )
 
-# Генерация GPIO-конфига
-add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/generated/gpio_config.h
-    COMMAND python ${PLATFORM_PATH}/scripts/generate_pins.py
-        -i ${PROJECT_SOURCE_DIR}/configs/pinmux.yaml
-        -o ${CMAKE_BINARY_DIR}/generated/gpio_config.h
-    DEPENDS ${PROJECT_SOURCE_DIR}/configs/pinmux.yaml
-)
-
-# Стартап и линкер
+# Стартап
 set(STARTUP_ASM ${PLATFORM_PATH}/templates/startup/startup_stm32f103x6.s)
-set(LINKER_SCRIPT ${PLATFORM_PATH}/templates/linker_scripts/STM32F103X6_FLASH.ld)

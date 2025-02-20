@@ -1,4 +1,4 @@
-mcu: stm32f103c8tx
+mcu: stm32f103c6tx
 compiler: arm-none-eabi-gcc
 clock: 72MHz
-linker_script: ${PLATFORM_PATH}/templates/linker_scripts/stm32f103c6tx.ld
+linker_script: ${PLATFORM_PATH}/templates/linker_scripts/STM32F103X6_FLASH.ld
